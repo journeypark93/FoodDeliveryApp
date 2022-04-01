@@ -1,6 +1,5 @@
 package com.spring.fooddeliveryapp.model;
 
-import com.spring.fooddeliveryapp.requestDto.RestaurantDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,7 +8,6 @@ import javax.persistence.*;
 
 @NoArgsConstructor
 @Getter
-@Setter
 @Entity
 public class Restaurant {
     @GeneratedValue(strategy = GenerationType.AUTO) //id 자동생성(++1)
@@ -32,10 +30,4 @@ public class Restaurant {
         this.minOrderPrice = minOrderPrice;
         this.deliveryFee = deliveryFee;
     }
-
-//    public void registeredRestaurants(RestaurantDto requestDto){
-//        this.name = requestDto.getName();
-//        this.minOrderPrice = requestDto.getMinOrderPrice();
-//        this.deliveryFee = requestDto.getDeliveryFee();
-//    }
 }
