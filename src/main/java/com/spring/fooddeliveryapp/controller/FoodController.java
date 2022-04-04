@@ -2,7 +2,6 @@ package com.spring.fooddeliveryapp.controller;
 
 import com.spring.fooddeliveryapp.model.Food;
 import com.spring.fooddeliveryapp.model.Restaurant;
-import com.spring.fooddeliveryapp.repository.FoodRepository;
 import com.spring.fooddeliveryapp.repository.RestaurantRepository;
 import com.spring.fooddeliveryapp.requestDto.FoodDto;
 import com.spring.fooddeliveryapp.service.FoodService;

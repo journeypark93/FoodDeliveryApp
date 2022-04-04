@@ -3,7 +3,6 @@ package com.spring.fooddeliveryapp.service;
 import com.spring.fooddeliveryapp.model.Food;
 import com.spring.fooddeliveryapp.model.Restaurant;
 import com.spring.fooddeliveryapp.repository.FoodRepository;
-import com.spring.fooddeliveryapp.repository.RestaurantRepository;
 import com.spring.fooddeliveryapp.requestDto.FoodDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import java.util.*;
 @Service
 public class FoodService {
     private final FoodRepository foodRepository;
-    private final RestaurantRepository restaurantRepository;
 
     //리스트로 주어진거니까... 리스트로 받아서, 하나씩 돌면서 음식포함여부, 가격여부 유효성 검사 후, 저장
 
@@ -71,6 +69,8 @@ public class FoodService {
         return null;
     }
 
+
+    //주어진 id값 레스토랑에 등록된 음심 찾기
     public List<Food> getFoods(Restaurant restaurant) {
         return foodRepository.findAllByRestaurant(restaurant);
     }

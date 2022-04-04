@@ -24,8 +24,8 @@ public class Restaurant {
     @Column(nullable = false)
     private int deliveryFee;
 
-    @OneToMany
-    private List<Food> foods;
+//    @OneToMany
+//    private List<Food> foods;
 
 
     public Restaurant(String name, int minOrderPrice, int deliveryFee){
