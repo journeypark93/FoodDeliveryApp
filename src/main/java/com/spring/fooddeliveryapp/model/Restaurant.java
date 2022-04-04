@@ -5,13 +5,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
 @Entity
 public class Restaurant {
     @GeneratedValue(strategy = GenerationType.AUTO) //id 자동생성(++1)
-    @Id //얘가 대장이야~
+    @Id//얘가 대장이야~
     private Long id;
 
     @Column(nullable = false)
@@ -23,7 +24,9 @@ public class Restaurant {
     @Column(nullable = false)
     private int deliveryFee;
 
-    // unique: 중복 허용 여부 (false 일때 중복 허용) (unique = true)
+    @OneToMany
+    private List<Food> foods;
+
 
     public Restaurant(String name, int minOrderPrice, int deliveryFee){
         this.name = name;

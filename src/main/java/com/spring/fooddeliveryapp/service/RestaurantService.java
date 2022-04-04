@@ -6,14 +6,13 @@ import com.spring.fooddeliveryapp.requestDto.RestaurantDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 
 @RequiredArgsConstructor
 @Service
 public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
 
-    @Transactional
+
     public Restaurant registeredRestaurants(RestaurantDto restaurantRequest) {
         String name = restaurantRequest.getName();
         int minOrderPrice = restaurantRequest.getMinOrderPrice();

@@ -34,6 +34,8 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
     //JSON 형식으로 보내기
     implementation group: 'org.json', name: 'json', version: '20160810'
+    //SQL parameter 값 확인하기
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
 }
 
 tasks.named('test') {
