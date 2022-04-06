@@ -1,8 +1,12 @@
 package com.spring.fooddeliveryapp.service;
 
 import com.spring.fooddeliveryapp.model.Food;
+import com.spring.fooddeliveryapp.model.FoodOrder;
+import com.spring.fooddeliveryapp.model.IsOrder;
 import com.spring.fooddeliveryapp.model.Restaurant;
+import com.spring.fooddeliveryapp.repository.FoodOrderRepository;
 import com.spring.fooddeliveryapp.repository.FoodRepository;
+import com.spring.fooddeliveryapp.repository.IsOrderRepository;
 import com.spring.fooddeliveryapp.repository.RestaurantRepository;
 import com.spring.fooddeliveryapp.requestDto.FoodOrderDto;
 import com.spring.fooddeliveryapp.requestDto.FoodOrderRequestDto;
@@ -11,8 +15,10 @@ import com.spring.fooddeliveryapp.requestDto.OrderRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -20,39 +26,65 @@ public class OrderService {
 
     private final RestaurantRepository restaurantRepository;
     private final FoodRepository foodRepository;
+    private final IsOrderRepository orderRepository;
+    private final FoodOrderRepository foodOrderRepository;
 
-    public List<OrderDto> registerOrder(List<OrderRequestDto> orderList) {
-//        List<OrderDto> orderDtos = new ArrayList<>();
+
+
+    @Transactional
+    public OrderDto registerOrder(OrderRequestDto orderList) {
+        List<FoodOrder> foodOrderLists = new ArrayList<>();
         List<FoodOrderDto> foodOrderDtos = new ArrayList<>();
 
+        Long restaurnatId = orderList.getRestaurantId();
+        Optional<Restaurant> restaurant = restaurantRepository.findById(restaurnatId);
+        String name;
+        int deliveryFee;
+        int totalPrice = 0;
+        int minOrderPrice;
 
-        for (OrderRequestDto orders : orderList) {
-            Long ownerId = orders.getRestaurantId();
-            List<FoodOrderRequestDto> orderRequestDtoList = orders.getFoods();
-            int totalPrice = 0;
+        if (restaurant.isPresent()) {
+            name = restaurant.get().getName();
+            deliveryFee = restaurant.get().getDeliveryFee();
+            totalPrice += deliveryFee;
+            minOrderPrice = restaurant.get().getMinOrderPrice();
+        } else throw new IllegalArgumentException("등록되지 않은 음식점입니다.");
 
-            for (FoodOrderRequestDto orderLists : orderRequestDtoList) {
-                Food food = foodRepository.getById(orderLists.getId());
-                String foodName = food.getName();
-                int quantity = orderLists.getQuantity();
-                int foodPrice = food.getPrice() * quantity;
 
-                FoodOrderDto foodOrderDto = new FoodOrderDto(foodName, quantity, foodPrice);
-                foodOrderDtos.add(foodOrderDto);
-                totalPrice += foodPrice;
+        List<FoodOrderRequestDto> foodOrderRequestDtoList = orderList.getFoods();
+        for (FoodOrderRequestDto foodList : foodOrderRequestDtoList) {
+            Long foodId = foodList.getId();
+            Food food = foodRepository.getById(foodId);
+
+            String foodName = food.getName();
+            int quantity = foodList.getQuantity();
+            int price = (food.getPrice() * quantity);
+
+            totalPrice += price;
+
+            if (quantity<1){
+                throw new IllegalArgumentException("1이상으로 입력해주세요");
+            } else if(quantity>100){
+                throw new IllegalArgumentException("100이하로 입력해주세요");
             }
 
-            Restaurant restaurant = restaurantRepository.getById(ownerId);
-            String name = restaurant.getName();
-            int deliveraryFee = restaurant.getDeliveryFee();
 
+            FoodOrder foodOrder = new FoodOrder(foodName, quantity, price);
+            foodOrderLists.add(foodOrder);
 
-            List<OrderDto> orderDtos = new ArrayList<>(name, foodOrderDtos, deliveraryFee, totalPrice);
+            FoodOrderDto foodOrderDto = new FoodOrderDto(foodName, quantity, price);
+            foodOrderDtos.add(foodOrderDto);
 
-//            List<OrderDto> orderDtos1 = orderDtos.addAll(name, foodOrderDtos, deliveraryFee, totalPrice);
+            IsOrder order = new IsOrder(name, deliveryFee, totalPrice);
+            orderRepository.save(order);
         }
 
+        if (totalPrice-deliveryFee < minOrderPrice){
+            throw new IllegalArgumentException("최소주문금액이상으로 주문해주세요.");
+        }
+        foodOrderRepository.saveAll(foodOrderLists);
 
-        return orderDtos;
+        OrderDto orderDto = new OrderDto(name, foodOrderDtos, deliveryFee, totalPrice);
+        return orderDto;
     }
 }

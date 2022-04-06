@@ -5,14 +5,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 
 @NoArgsConstructor
 @Getter
+@Setter
 @Entity
 public class Restaurant {
     @GeneratedValue(strategy = GenerationType.AUTO) //id 자동생성(++1)
-    @Id//얘가 대장이야~
+    @Id//얘가 Pk 야
     private Long id;
 
     @Column(nullable = false)
