@@ -1,6 +1,5 @@
 package com.spring.fooddeliveryapp.controller;
 
-import com.spring.fooddeliveryapp.model.FoodOrder;
 import com.spring.fooddeliveryapp.requestDto.OrderDto;
 import com.spring.fooddeliveryapp.requestDto.OrderRequestDto;
 import com.spring.fooddeliveryapp.service.OrderService;
@@ -22,9 +21,9 @@ public class OrderController {
         return orders;
     }
 
-//    @GetMapping("/orders")
-//    public OrderDto getOrders(){
-//
-//        return orders;
-//    }
+    @GetMapping("/orders")
+    public List<OrderDto> getOrders(){
+
+        return orderService.getOrder();
+    }
 }

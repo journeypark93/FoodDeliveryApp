@@ -26,7 +26,7 @@ public class OrderService {
 
     private final RestaurantRepository restaurantRepository;
     private final FoodRepository foodRepository;
-    private final IsOrderRepository orderRepository;
+    private final IsOrderRepository isorderRepository;
     private final FoodOrderRepository foodOrderRepository;
 
 
@@ -76,7 +76,7 @@ public class OrderService {
             foodOrderDtos.add(foodOrderDto);
 
             IsOrder order = new IsOrder(name, deliveryFee, totalPrice);
-            orderRepository.save(order);
+            isorderRepository.save(order);
         }
 
         if (totalPrice-deliveryFee < minOrderPrice){
@@ -86,5 +86,38 @@ public class OrderService {
 
         OrderDto orderDto = new OrderDto(name, foodOrderDtos, deliveryFee, totalPrice);
         return orderDto;
+    }
+
+    public List<OrderDto> getOrder() {
+        List<IsOrder> orderList = isorderRepository.findAll();
+        List<FoodOrder> foodOrderList = foodOrderRepository.findAll();
+        List<FoodOrderDto> foodOrderDtos = new ArrayList<>();
+        List<OrderDto> orderDtos = new ArrayList<>();
+
+        String name = null;
+        int deliveryFee = 0;
+        int totalPrice = 0;
+
+        for(IsOrder orderInfo : orderList){
+            name = orderInfo.getRestaurantName();
+            deliveryFee = orderInfo.getDeliveryFee();
+            totalPrice = orderInfo.getTotalPrice();
+        }
+
+        for (FoodOrder food : foodOrderList){
+            String foodName = food.getName();
+            int quantity = food.getQuantity();
+            int price = food.getPrice();
+
+            FoodOrderDto foodOrderDto = new FoodOrderDto(foodName, quantity, price);
+            foodOrderDtos.add(foodOrderDto);
+
+        }
+
+
+
+        OrderDto orderDto = new OrderDto(name, foodOrderDtos, deliveryFee, totalPrice);
+        orderDtos.add(orderDto);
+        return orderDtos;
     }
 }
